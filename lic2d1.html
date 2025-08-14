@@ -1,0 +1,495 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Thi Ảo - Chương 2 - Khí Lí Tưởng - Đề số 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+        /* Main container for the exam */
+        .exam-container {
+            max-width: 900px;
+            margin: 1rem auto; /* Reduced margin for mobile */
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem; /* Padding for mobile */
+        }
+        /* Header section */
+        .exam-header {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        /* Sticky timer at the top */
+        .timer {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.25rem; /* Adjusted font size for responsiveness */
+            font-weight: 700;
+            z-index: 10;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+        /* Individual question block */
+        .question-block {
+            margin-bottom: 2rem;
+            padding: 1rem; /* Adjusted padding */
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+            line-height: 1.6;
+        }
+        /* Option styling for multiple choice */
+        .option {
+            display: flex;
+            align-items: flex-start; /* Align items to the start for long text */
+            text-align: left;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .option:hover {
+            background-color: #f3f4f6;
+        }
+        .option input {
+            margin-top: 0.25rem; /* Align radio button better */
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        /* Short answer input field */
+        .short-answer-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        /* Action buttons container */
+        .action-buttons {
+            display: flex;
+            flex-direction: column; /* Stack buttons on mobile */
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        /* General button styling */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%; /* Full width on mobile */
+        }
+        .btn-submit {
+            background-color: #2563eb;
+            color: white;
+        }
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+        .btn-redo {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        .btn-redo:hover {
+            background-color: #d1d5db;
+        }
+        
+        /* Result styles */
+        .correct { border-left: 5px solid #22c55e; background-color: #f0fdf4; }
+        .incorrect { border-left: 5px solid #ef4444; background-color: #fef2f2; }
+        .unanswered { border-left: 5px solid #f97316; background-color: #fff7ed; }
+        .correct-answer-text { color: #16a34a; font-weight: 600; margin-left: 1rem; }
+        .result-summary {
+            text-align: center;
+            padding: 1.5rem;
+            border: 2px dashed #4f46e5;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            background-color: #fafaff;
+        }
+        .result-icon { font-size: 1.2rem; margin-left: 0.5rem; }
+
+        /* Responsive True/False Table */
+        .true-false-table .statement-cell {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        .true-false-table .option-cell {
+            display: inline-block;
+            margin-right: 1rem;
+        }
+        .true-false-table .feedback-cell {
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        /* Desktop and larger screen adjustments */
+        @media (min-width: 768px) {
+            .exam-container {
+                margin: 2rem auto;
+                padding: 2.5rem;
+            }
+            .question-block {
+                padding: 1.5rem;
+            }
+            .timer {
+                font-size: 1.5rem;
+            }
+            .action-buttons {
+                flex-direction: row; /* Buttons side-by-side on desktop */
+                justify-content: center;
+            }
+            .btn {
+                width: auto; /* Auto width for buttons on desktop */
+            }
+            .result-summary {
+                padding: 2rem;
+            }
+             /* Revert True/False table to standard table layout on desktop */
+            .true-false-table .statement-cell,
+            .true-false-table .option-cell,
+            .true-false-table .feedback-cell {
+                display: table-cell;
+                width: auto;
+                margin-bottom: 0;
+                margin-right: 0;
+                margin-top: 0;
+                vertical-align: middle;
+            }
+             .true-false-table .statement-cell {
+                width: 70%;
+             }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="exam-container">
+        <div class="exam-header">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">TỔNG ÔN CHƯƠNG 2 – KHÍ LÍ TƯỞNG – ĐỀ SỐ 1</h1>
+            <p class="text-gray-600 mt-2">Thời gian làm bài: 60 phút</p>
+        </div>
+
+        <div id="timer" class="timer">Thời gian còn lại: 60:00</div>
+        
+        <div id="exam-form">
+            <!-- PHẦN I -->
+            <h2 class="text-xl md:text-2xl font-bold text-indigo-700 mb-4">PHẦN I. CÂU TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN</h2>
+            <div id="part1"></div>
+
+            <!-- PHẦN II -->
+            <h2 class="text-xl md:text-2xl font-bold text-indigo-700 mt-8 mb-4">PHẦN II. CÂU TRẮC NGHIỆM ĐÚNG SAI</h2>
+            <div id="part2"></div>
+            
+            <!-- PHẦN III -->
+            <h2 class="text-xl md:text-2xl font-bold text-indigo-700 mt-8 mb-4">PHẦN III. CÂU TRẮC NGHIỆM TRẢ LỜI NGẮN</h2>
+            <div id="part3"></div>
+
+            <div class="action-buttons">
+                <button id="submitBtn" class="btn btn-submit">Nộp Bài</button>
+                <button id="redoBtn" class="btn btn-redo" style="display: none;">Làm Lại</button>
+            </div>
+        </div>
+
+        <div id="result-summary" class="result-summary" style="display: none;"></div>
+    </div>
+
+    <script>
+        const examData = {
+            part1: [
+                { question: "Số Avogadro là số phân tử có trong", options: ["1 lít khí ở điều kiện tiêu chuẩn.", "1 mol khí.", "1 g khí.", "1 kg khí."], answer: "B" },
+                { question: "Theo thuyết động học phân tử chất khí thì điều nào sau đây là không đúng?", options: ["Lực tương tác giữa các phân tử chất khí rất yếu gần như không đáng kể.", "Các phân tử khí chuyển động hỗn loạn không ngừng, nhiệt độ càng cao thì chuyển động của các phân tử càng nhanh.", "Chất khí được cấu tạo từ các phân tử có kích thước rất lớn so với khoảng cách giữa chúng.", "Trong một chiếc bình kín khi ta đun nóng khí bên trong thì các phân tử khí mới chuyển động hỗn loạn và gây áp lực lên thành bình."], answer: "C" },
+                { question: "Quá trình đẳng áp là quá trình biến đổi trạng thái của lượng khí xác định khi", options: ["thể tích không đổi.", "áp suất không đổi.", "nhiệt độ không đổi.", "áp suất thay đổi."], answer: "B" },
+                { question: "Đồ thị biểu diễn hai đường đẳng nhiệt của cùng một lượng khí lí tưởng biểu diễn như hình vẽ. Mối quan hệ về nhiệt độ của hai đường đẳng nhiệt này là", svg: `<svg viewBox="0 0 400 300" class="w-full max-w-xs mx-auto my-4 bg-gray-50 rounded-lg border"><path d="M 50 250 L 380 250" stroke="black" stroke-width="2" marker-end="url(#arrowV)"></path><path d="M 50 250 L 50 30" stroke="black" stroke-width="2" marker-end="url(#arrowP)"></path><text x="30" y="30" font-size="20" font-family="serif" font-style="italic">p</text><text x="380" y="270" font-size="20" font-family="serif" font-style="italic">V</text><text x="35" y="270" font-size="16">O</text><path d="M 120 230 Q 180 180 340 160" stroke="#3b82f6" stroke-width="3" fill="none"></path><text x="350" y="175" font-size="16" font-family="serif">T₁</text><path d="M 100 190 Q 160 120 350 90" stroke="#ef4444" stroke-width="3" fill="none"></path><text x="360" y="105" font-size="16" font-family="serif">T₂</text><defs><marker id="arrowV" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="black"></path></marker><marker id="arrowP" viewBox="0 0 10 10" refX="5" refY="2" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 10 L 5 0 L 10 10 z" fill="black"></path></marker></defs></svg>`, options: ["T₂ < T₁", "T₂ > T₁", "T₂ ≤ T₁", "T₂ = T₁"], answer: "B" },
+                { question: "Trong hệ tọa độ (p, T), đường nào sau đây là đường đẳng tích?", options: ["Đường hypebol.", "Đường thẳng song song trục hoành.", "Đường thẳng kéo dài đi qua gốc tọa độ O và có hệ số góc dương.", "Đường thẳng song song với trục tung."], answer: "C" },
+                { question: "Gọi μ là mật độ phân tử khí, m là khối lượng mỗi phân tử khí, k là hằng số Boltzmann, T là nhiệt độ tuyệt đối, v² và Wđ lần lượt là trung bình của bình phương vận tốc và động năng tịnh tiến trung bình của mỗi phân tử khí. Công thức nào sau đây về áp suất chất khí p là không đúng?", options: ["p = μkT", "p = (2/3)μWđ", "p = (1/3)μmv²", "p = (3/2)kT"], answer: "D" },
+                { question: "Cho ba thông số trạng thái của khối khí lí tưởng xác định: Thể tích V, áp suất p và nhiệt độ tuyệt đối T. Hệ thức nào sau đây diễn tả đúng định luật Charles?", options: ["V₁/T₁ = T₂/V₂", "T₁V₁ = T₂V₂", "p₁V₁ = p₂V₂", "V/T = const"], answer: "D" },
+                { question: "Sử dụng thông tin sau cho Câu 8 và Câu 9: Trong hình là thí nghiệm về nhiệt kế khí ở thể tích không đổi... Nếu thể tích của khí trong bình A được giữ không đổi, khi nhiệt độ của môi trường tăng lên, điều gì xảy ra với áp suất của khí trong bình?", svg: `<svg viewBox="0 0 350 300" class="w-full max-w-xs mx-auto my-4"><path d="M 50 100 C 50 50, 150 50, 150 100 L 150 150 C 150 180, 50 180, 50 150 Z" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2"></path><text x="95" y="125" font-size="16" text-anchor="middle">Khí A</text><text x="95" y="200" font-size="14" text-anchor="middle">Dung dịch cần đo</text><rect x="40" y="185" width="110" height="20" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2"></rect><path d="M150 120 L 180 120 L 180 200 C 180 230, 220 230, 220 200 L 220 100" fill="none" stroke="gray" stroke-width="3"></path><path d="M 270 50 L 270 200 C 270 230, 310 230, 310 200 L 310 100" fill="none" stroke="gray" stroke-width="3"></path><path d="M 220 200 C 220 220, 270 220, 270 200" fill="none" stroke="gray" stroke-width="3"></path><path d="M 220 180 C 220 200, 270 200, 270 180" fill="#e0f2fe"></path><text x="245" y="215" font-size="14" text-anchor="middle">Nước</text><text x="220" y="170" font-size="14">A</text><text x="270" y="170" font-size="14">B</text><rect x="235" y="100" width="5" height="80" fill="#fde68a"></rect><path d="M 290 40 L 290 20" stroke="black" stroke-width="2" marker-end="url(#arrow)"></path><text x="290" y="15" font-size="14" text-anchor="middle">P₀</text><line x1="320" y1="50" x2="320" y2="200"></line><text x="325" y="125" font-size="14">h</text><defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="black"></path></marker></defs></svg>`, options: ["Áp suất tăng.", "Áp suất giảm.", "Áp suất không đổi.", "Không thể xác định."], answer: "A" },
+                { question: "Tính áp suất của khối khí trong bình A khi chênh lệch mực nước 2 ống như hình vẽ là h = 50 cm.", options: ["104905 Pa", "149050 Pa", "49050 Pa", "95095 Pa"], answer: "A" },
+                { question: "Động năng tịnh tiến trung bình của phân tử khí lí tưởng phụ thuộc vào", options: ["nhiệt độ của khối khí.", "áp suất chất khí.", "mật độ phân tử khí.", "bản chất chất khí."], answer: "A" },
+                { question: "Đồ thị biểu diễn quá trình đẳng áp của một khối khí lí tưởng xác định như hình vẽ. Ứng với các áp suất khác nhau của cùng một lượng khí, ta có những đường đẳng áp khác nhau. Hình bên là các đường đẳng áp p₁, p₂ và p₃ của cùng một lượng khí xác định. Hệ thức nào sau đây là đúng?", svg: `<svg viewBox="0 0 400 300" class="w-full max-w-xs mx-auto my-4 bg-gray-50 rounded-lg border"><path d="M 50 250 L 380 250" stroke="blue" stroke-width="2"></path><path d="M 50 250 L 50 30" stroke="blue" stroke-width="2"></path><text x="40" y="20" font-size="20" font-family="serif">V</text><text x="385" y="255" font-size="20" font-family="serif">T</text><text x="40" y="270" font-size="16">O</text><path d="M 50 250 L 200 50" stroke="black" stroke-width="2" fill="none"></path><text x="205" y="55" font-size="16" font-family="serif">p₁</text><path d="M 50 250 L 300 100" stroke="black" stroke-width="2" fill="none"></path><text x="305" y="105" font-size="16" font-family="serif">p₂</text><path d="M 50 250 L 350 180" stroke="black" stroke-width="2" fill="none"></path><text x="355" y="185" font-size="16" font-family="serif">p₃</text></svg>`, options: ["p₁ > p₂ > p₃", "p₁ < p₂ = p₃", "p₁ < p₂ < p₃", "p₁ = p₂ > p₃"], answer: "C" },
+                { question: "Một bình kín có thể tích không đổi chứa một lượng khí nhất định. Chất khí trong bình được làm lạnh. Điều gì xảy ra với áp suất chất khí và động năng trung bình của các phân tử khí trong bình?", options: ["Áp suất chất khí giảm, động năng trung bình của các phân tử khí giảm.", "Áp suất chất khí giảm, động năng trung bình của các phân tử khí tăng.", "Áp suất chất khí tăng, động năng trung bình của các phân tử khí giảm.", "Áp suất chất khí tăng, động năng trung bình của các phân tử khí tăng."], answer: "A" },
+                { question: "Hệ thức nào sau đây không phù hợp với định luật Boyle?", options: ["p ~ 1/V", "V ~ 1/p", "p ~ V", "p₁V₁ = p₂V₂"], answer: "C" },
+                { question: "Trong hệ tọa độ pOV thì đường đẳng áp là", options: ["đường thẳng đi qua gốc tọa độ.", "đường thẳng xiên qua trục OV.", "đường thẳng vuông góc với trục OV.", "đường thẳng song song với trục OV."], answer: "D" },
+                { question: "Phương trình trạng thái khí lí tưởng cho biết các mối quan hệ giữa", options: ["nhiệt độ và thể tích.", "thể tích và áp suất.", "nhiệt độ và khối lượng riêng.", "nhiệt độ, thể tích và áp suất."], answer: "D" },
+                { question: "Hai bình kín có thể tích bằng nhau đều chứa khí lí tưởng ở cùng một nhiệt độ. Khối lượng khí trong hai bình bằng nhau nhưng khối lượng một phân tử khí của bình 2 lớn gấp hai lần khối lượng một phân tử khí ở bình 1. Áp suất khí ở bình 1", options: ["bằng áp suất khí ở bình 2.", "gấp bốn lần áp suất khí ở bình 2.", "gấp hai lần áp suất khí ở bình 2.", "bằng một nửa áp suất khí ở bình 2."], answer: "C" },
+                { question: "Ở nhiệt độ 450 K thể tích của một khối khí xác định là 5 dm³. Giữ cho áp suất khối khí không đổi thì khi thể tích của khối khí đạt 4,8 dm³ nhiệt độ của khối khí bằng bao nhiêu?", options: ["432 K.", "416 K.", "400 K.", "360 K."], answer: "A" },
+                { question: "Cho một ống nghiệm một đầu kín được đặt thẳng đứng, miệng ống ở trên; ống có tiết diện đều, bên trong có một cột không khí cao l = 18 cm ngăn cách với bên ngoài bằng cột thủy ngân chiều dài d và có mặt thoáng cách miệng ống h = 4 cm như hình bên. Cho áp suất khí quyển là p₀ = 76 cmHg. Xoay từ từ ống nghiệm 180° quanh một trục nằm ngang và vuông góc với mặt phẳng hình vẽ làm miệng ống hướng xuống thì thấy thủy ngân vừa tới miệng ống mà không bị chảy ra khỏi ống. Giá trị của d là", svg: `<svg viewBox="0 0 150 300" class="w-24 mx-auto my-4"><rect x="25" y="10" width="100" height="280" rx="10" fill="none" stroke="black" stroke-width="2"></rect><rect x="25" y="10" width="100" height="40" fill="#e2e8f0"></rect><text x="75" y="35" text-anchor="middle" font-size="14">h=4cm</text><rect x="25" y="50" width="100" height="76" fill="#94a3b8"></rect><text x="75" y="90" text-anchor="middle" font-size="14" fill="white">d</text><rect x="25" y="126" width="100" height="164" fill="#e0f2fe"></rect><text x="75" y="210" text-anchor="middle" font-size="14">l=18cm</text></svg>`, options: ["5,4 cm.", "6,2 cm.", "6,8 cm.", "7,6 cm."], answer: "D" }
+            ],
+            part2: [
+                {
+                    context: "Một lượng khí lí tưởng thực hiện chu trình 1→2→3→4→1 có đồ thị pOV như hình bên. Xét tính đúng sai của các phát biểu sau:",
+                    svg: `<svg viewBox="0 0 400 300" class="w-full max-w-xs mx-auto my-4 bg-gray-50 rounded-lg border"><path d="M 50 250 L 380 250" stroke="black" stroke-width="2"></path><path d="M 50 250 L 50 30" stroke="black" stroke-width="2"></path><text x="40" y="20" font-size="20" font-family="serif">p</text><text x="385" y="255" font-size="20" font-family="serif">V</text><text x="40" y="270" font-size="16">O</text><path d="M 100 200 L 150 100 L 300 100 L 250 200 Z" stroke="#3b82f6" stroke-width="3" fill="#bfdbfe" fill-opacity="0.5"></path><path d="M 50 250 L 150 100" stroke="black" stroke-width="1" stroke-dasharray="4"></path><text x="90" y="215" font-size="16">1</text><text x="140" y="90" font-size="16">2</text><text x="305" y="105" font-size="16">3</text><text x="260" y="215" font-size="16">4</text><path d="M 120 155 L 130 145 M 125 150 L 125 150 L 135 160" stroke="black" fill="none"></path><path d="M 220 100 L 230 100" stroke="black" fill="none" marker-end="url(#arrow)"></path><path d="M 280 145 L 270 155 M 275 150 L 275 150 L 265 140" stroke="black" fill="none"></path><path d="M 180 200 L 170 200" stroke="black" fill="none" marker-end="url(#arrow)"></path><defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="black"></path></marker></defs></svg>`,
+                    statements: [
+                        { text: "Nhiệt độ thấp nhất ứng với khối khí ở trạng thái 1.", answer: true },
+                        { text: "Nhiệt độ cao nhất ứng với khối khí ở trạng thái 2.", answer: false },
+                        { text: "Trong quá trình 2→3, chất khí tỏa nhiệt ra môi trường bên ngoài.", answer: false },
+                        { text: "Trong quá trình 4→1, chất khí tỏa nhiệt ra môi trường bên ngoài.", answer: true }
+                    ]
+                },
+                {
+                    context: "Một khí cầu có thể tích V = 336 m³ khối lượng vỏ và khoang chở là m = 82 kg được bơm không khí nóng tới áp suất bằng áp suất không khí bên ngoài. Biết không khí bên ngoài có nhiệt độ 30°C và áp suất 1 atm (1 atm = 101325 Pa); khối lượng mol của không khí ở điều kiện chuẩn là 29.10⁻³ kg/mol.",
+                    statements: [
+                        { text: "Nhiệt độ của không khí bên ngoài khí cầu là 303 K.", answer: true },
+                        { text: "Cho rằng lực của gió không đáng kể, lực chính đẩy khí cầu bay lên là lực Archimedes (Ắc-xi-mét) tác dụng vào khí cầu.", answer: true },
+                        { text: "Cho rằng lực của gió không đáng kể, để khí cầu bắt đầu bay lên thì nhiệt độ không khí nóng bên trong khí cầu là 368 K.", answer: false },
+                        { text: "Khối lượng riêng của không khí ở nhiệt độ 30°C và áp suất 1 atm là 1,17 g/l.", answer: true }
+                    ]
+                },
+                {
+                    context: "Một nhóm học sinh tìm hiểu về mối liên hệ giữa áp suất và thể tích của một lượng khí xác định khi nhiệt độ được giữ không đổi. Họ đã thực hiện các nội dung sau: Chuẩn bị bộ thí nghiệm (hình bên) dịch chuyển từ từ pit-tông để làm thay đổi thể tích của khí, đọc và ghi kết quả áp suất, thể tích theo số chỉ của dụng cụ đo kết quả như bảng bên.",
+                    statements: [
+                        { text: "Số liệu thí nghiệm cho thấy áp suất tăng tỉ lệ nghịch với thể tích của nó.", answer: true },
+                        { text: "Bỏ qua sai số coi công thức liên hệ áp suất theo thể tích là p = 23/V (p đo bằng bar, 1 bar = 10⁵ Pa), V đo bằng cm³. Thể tích khí đã dùng trong thí nghiệm ở điều kiện tiêu chuẩn là 0,18 lít.", answer: false },
+                        { text: "Thí nghiệm này đã chứng minh được định luật Boyle.", answer: true },
+                        { text: "Khi tiến hành thí nghiệm nhóm đã dịch chuyển từ từ pit-tông để mục đích là giúp toàn thể các bạn trong nhóm có thời gian để nhìn rõ kết quả thay đổi các thông số của khí.", answer: false }
+                    ]
+                },
+                {
+                    context: "Túi khí xe ô tô là một phần của hệ thống an toàn... Một túi khí tiêu chuẩn có thể tích xấp xỉ 60 lít khi được bơm căng ở 25°C và chịu được áp suất tối đa lên đến 5 psi (1 psi ≈ 6,895 kPa).",
+                    statements: [
+                        { text: "Khi xảy ra va chạm, hệ thống túi khí sẽ phồng lên rất nhanh để tạo thành đệm hơi giúp làm giảm chấn thương cho người ngồi trong xe.", answer: true },
+                        { text: "Áp suất tối đa mà túi khí tiêu chuẩn chịu được có giá trị xấp xỉ 34,475 kPa.", answer: true },
+                        { text: "Cần sản sinh 5 mol khí N₂ để bơm căng túi khí này đến áp suất 3 psi ở nhiệt độ 25°C.", answer: false },
+                        { text: "Lực bung mạnh của túi khí vẫn có khả năng gây thương tích cho người ngồi trong xe, đặc biệt là trẻ em. Túi khí hoạt động hiệu quả nhất khi kết hợp với dây an toàn và không nên để trẻ nhỏ ngồi ở ghế trước.", answer: true }
+                    ]
+                }
+            ],
+            part3: [
+                { question: "Để động năng tịnh tiến trung bình của các phân tử khí bằng 1,0 eV thì nhiệt độ của khối khí đó bằng bao nhiêu theo thang đo Kelvin? Lấy 1 eV = 1,6.10⁻¹⁹ J và k = 1,38.10⁻²³ J/K (Kết quả làm tròn đến hàng đơn vị).", answer: "7729" },
+                { question: "Ở 27°C thể tích của một lượng khí lí tưởng là 6 lít. Thể tích của lượng khí đó ở nhiệt độ 127°C khi áp suất không đổi bằng bao nhiêu lít? (Kết quả làm tròn đến hàng đơn vị).", answer: "8" },
+                { question: "Một bình đựng 2,5 g khí helium (khối lượng mol là 4 g/mol) có thể tích 5 lít và nhiệt độ ở 27°C. Áp suất khí trong bình là x.10⁵ (N/m²). Giá trị của x bằng bao nhiêu? (Kết quả làm tròn đến hàng phần mười).", answer: "3.1" },
+                { question: "Một cái hồ sâu 15 m dưới đáy hồ nhiệt độ của nước là 7°C còn trên mặt hồ là 22°C. Áp suất khí quyển là 1,013.10⁵ Pa. Một bọt không khí có thể tích 1 mm³ di chuyển từ đáy hồ lên. Ở sát mặt nước, thể tích không khí trong bọt nước gần bằng b mm³. Cho biết khối lượng riêng của nước D = 1000 kg/m³ gia tốc trọng trường g = 9,8 m/s². Xác định giá trị của b (Kết quả làm tròn đến hàng phần trăm).", answer: "2.58" },
+                { question: "Khối lượng riêng của một chất khí là ρ = 6.10⁻² kg/m³, vận tốc căn quân phương của các phân tử khí này là 400 m/s. Áp suất của khối khí tác dụng lên thành bình là y.10³ N/m². Xác định giá trị của y", answer: "3.2" },
+                { question: "Một khối khí có thể tích không đổi, khi nhiệt độ của khí tăng từ 0°C lên 75°C thì áp suất khí tăng thêm một lượng là Δp₁; khi nhiệt độ của khí tăng từ 75°C lên 85°C thì áp suất khí tăng thêm một lượng Δp₂. Tỉ số Δp₁/Δp₂ bằng bao nhiêu?", answer: "7.5" }
+            ]
+        };
+
+        const part1Container = document.getElementById('part1');
+        const part2Container = document.getElementById('part2');
+        const part3Container = document.getElementById('part3');
+        const submitBtn = document.getElementById('submitBtn');
+        const redoBtn = document.getElementById('redoBtn');
+        const resultSummaryContainer = document.getElementById('result-summary');
+        const timerEl = document.getElementById('timer');
+
+        let timerInterval;
+        let timeRemaining = 3600;
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            timerEl.textContent = `Thời gian còn lại: ${formatTime(timeRemaining)}`;
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                timerEl.textContent = `Thời gian còn lại: ${formatTime(timeRemaining)}`;
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerEl.textContent = "Hết giờ!";
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function loadExam() {
+            // Part 1
+            examData.part1.forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'question-block';
+                qBlock.id = `p1-q${index}`;
+                let optionsHTML = '';
+                q.options.forEach((opt, i) => {
+                    const optionChar = String.fromCharCode(65 + i);
+                    optionsHTML += `
+                        <label class="option">
+                            <input type="radio" name="p1-q${index}" value="${optionChar}">
+                            <span><strong>${optionChar}.</strong> ${opt}</span>
+                        </label>
+                    `;
+                });
+                qBlock.innerHTML = `<p class="question-title"><strong>Câu ${index + 1}:</strong> ${q.question}</p>${q.svg || ''}${optionsHTML}`;
+                part1Container.appendChild(qBlock);
+            });
+
+            // Part 2
+            examData.part2.forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'question-block';
+                qBlock.id = `p2-q${index}`;
+                let statementsHTML = '<table class="w-full"><tbody>';
+                q.statements.forEach((stmt, i) => {
+                    const statementChar = String.fromCharCode(97 + i);
+                    statementsHTML += `
+                        <tr id="p2-q${index}-s${i}" class="true-false-table">
+                            <td class="statement-cell py-2"><strong>${statementChar})</strong> ${stmt.text}</td>
+                            <td class="option-cell py-2">
+                                <label class="option !mb-0 !p-2">
+                                    <input type="radio" name="p2-q${index}-s${i}" value="true"> Đúng
+                                </label>
+                            </td>
+                            <td class="option-cell py-2">
+                                <label class="option !mb-0 !p-2">
+                                    <input type="radio" name="p2-q${index}-s${i}" value="false"> Sai
+                                </label>
+                            </td>
+                            <td class="feedback-cell py-2"></td>
+                        </tr>
+                    `;
+                });
+                statementsHTML += '</tbody></table>';
+                qBlock.innerHTML = `<p class="question-title"><strong>Câu ${index + 1}:</strong> ${q.context}</p>${q.svg || ''}${statementsHTML}`;
+                part2Container.appendChild(qBlock);
+            });
+
+            // Part 3
+            examData.part3.forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'question-block';
+                qBlock.id = `p3-q${index}`;
+                qBlock.innerHTML = `
+                    <p class="question-title"><strong>Câu ${index + 1}:</strong> ${q.question}</p>
+                    <input type="text" class="short-answer-input" name="p3-q${index}" placeholder="Nhập câu trả lời của bạn...">
+                `;
+                part3Container.appendChild(qBlock);
+            });
+        }
+        
+        function getResultIcon(isCorrect, isAnswered) {
+            if (!isAnswered) return '<span class="result-icon">⚪️</span><span class="text-orange-600 font-medium ml-2">Chưa làm</span>';
+            if (isCorrect) return '<span class="result-icon">✅</span>';
+            return '<span class="result-icon">❌</span>';
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            redoBtn.style.display = 'block';
+
+            let correctItems = 0;
+            const totalItems = examData.part1.length + examData.part2.reduce((acc, q) => acc + q.statements.length, 0) + examData.part3.length;
+            
+            // Check Part 1
+            examData.part1.forEach((q, index) => {
+                const qBlock = document.getElementById(`p1-q${index}`);
+                const selected = document.querySelector(`input[name="p1-q${index}"]:checked`);
+                if (selected) {
+                    if (selected.value === q.answer) {
+                        correctItems++;
+                        qBlock.classList.add('correct');
+                    } else {
+                        qBlock.classList.add('incorrect');
+                        const correctLabel = Array.from(qBlock.querySelectorAll('.option')).find(label => label.querySelector('input').value === q.answer);
+                        if (correctLabel) correctLabel.insertAdjacentHTML('beforeend', `<span class="correct-answer-text">(Đáp án đúng)</span>`);
+                    }
+                } else {
+                    qBlock.classList.add('unanswered');
+                    const correctLabel = Array.from(qBlock.querySelectorAll('.option')).find(label => label.querySelector('input').value === q.answer);
+                    if (correctLabel) correctLabel.insertAdjacentHTML('beforeend', `<span class="correct-answer-text">(Đáp án đúng)</span>`);
+                }
+            });
+
+            // Check Part 2
+            examData.part2.forEach((q, qIndex) => {
+                q.statements.forEach((stmt, sIndex) => {
+                    const row = document.getElementById(`p2-q${qIndex}-s${sIndex}`);
+                    const feedbackCell = row.querySelector('.feedback-cell');
+                    const selected = document.querySelector(`input[name="p2-q${qIndex}-s${sIndex}"]:checked`);
+                    let isCorrect = false;
+                    let isAnswered = false;
+                    if (selected) {
+                        isAnswered = true;
+                        if ((selected.value === 'true' && stmt.answer) || (selected.value === 'false' && !stmt.answer)) {
+                            correctItems++;
+                            isCorrect = true;
+                        }
+                    }
+                    feedbackCell.innerHTML = getResultIcon(isCorrect, isAnswered);
+                    if(!isCorrect){
+                        feedbackCell.innerHTML += `<span class="correct-answer-text">Đáp án: ${stmt.answer ? 'Đúng' : 'Sai'}</span>`;
+                    }
+                });
+            });
+
+            // Check Part 3
+            examData.part3.forEach((q, index) => {
+                const qBlock = document.getElementById(`p3-q${index}`);
+                const input = document.querySelector(`input[name="p3-q${index}"]`);
+                if (input.value.trim() !== '') {
+                    if (input.value.trim() == q.answer) {
+                        correctItems++;
+                        qBlock.classList.add('correct');
+                    } else {
+                        qBlock.classList.add('incorrect');
+                        input.insertAdjacentHTML('afterend', `<div class="mt-2"><span class="correct-answer-text">Đáp án đúng: ${q.answer}</span></div>`);
+                    }
+                } else {
+                    qBlock.classList.add('unanswered');
+                    input.insertAdjacentHTML('afterend', `<div class="mt-2"><span class="correct-answer-text">Đáp án đúng: ${q.answer}</span></div>`);
+                }
+            });
+
+            const totalScore = (correctItems / totalItems) * 10;
+
+            resultSummaryContainer.innerHTML = `
+                <h2 class="text-2xl md:text-3xl font-bold text-indigo-700 mb-4">Kết Quả Bài Làm</h2>
+                <p class="text-lg md:text-xl mb-2"><strong>Tổng điểm:</strong> ${totalScore.toFixed(2)} / 10.00</p>
+                <p class="text-gray-600">(Số câu đúng: ${correctItems} / ${totalItems})</p>
+            `;
+            resultSummaryContainer.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function redoExam() {
+            document.getElementById('exam-form').reset();
+            document.querySelectorAll('.question-block').forEach(el => el.classList.remove('correct', 'incorrect', 'unanswered'));
+            document.querySelectorAll('.correct-answer-text').forEach(el => el.remove());
+            document.querySelectorAll('.feedback-cell').forEach(el => el.innerHTML = '');
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            redoBtn.style.display = 'none';
+            resultSummaryContainer.style.display = 'none';
+            timeRemaining = 3600;
+            startTimer();
+        }
+
+        submitBtn.addEventListener('click', submitExam);
+        redoBtn.addEventListener('click', redoExam);
+
+        window.onload = () => {
+            loadExam();
+            startTimer();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,509 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Thi Ảo - Đề Tham Khảo 003</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1f2937;
+        }
+        /* Main container for the exam */
+        .exam-container {
+            max-width: 900px;
+            margin: 1rem auto; /* Reduced margin for mobile */
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem; /* Padding for mobile */
+        }
+        /* Header section */
+        .exam-header {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        /* Sticky timer at the top */
+        .timer {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.25rem; /* Adjusted font size for responsiveness */
+            font-weight: 700;
+            z-index: 10;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+        /* Individual question block */
+        .question-block {
+            margin-bottom: 2rem;
+            padding: 1rem; /* Adjusted padding */
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+            line-height: 1.6;
+        }
+        /* Option styling for multiple choice */
+        .option {
+            display: flex;
+            align-items: flex-start; /* Align items to the start for long text */
+            text-align: left;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .option:hover {
+            background-color: #f3f4f6;
+        }
+        .option input {
+            margin-top: 0.25rem; /* Align radio button better */
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        /* Short answer input field */
+        .short-answer-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        /* Action buttons container */
+        .action-buttons {
+            display: flex;
+            flex-direction: column; /* Stack buttons on mobile */
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        /* General button styling */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%; /* Full width on mobile */
+        }
+        .btn-submit {
+            background-color: #2563eb;
+            color: white;
+        }
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+        .btn-redo {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+        .btn-redo:hover {
+            background-color: #d1d5db;
+        }
+        
+        /* Result styles */
+        .correct { border-left: 5px solid #22c55e; background-color: #f0fdf4; }
+        .incorrect { border-left: 5px solid #ef4444; background-color: #fef2f2; }
+        .unanswered { border-left: 5px solid #f97316; background-color: #fff7ed; }
+        .correct-answer-text { color: #16a34a; font-weight: 600; margin-left: 1rem; }
+        .result-summary {
+            text-align: center;
+            padding: 1.5rem;
+            border: 2px dashed #4f46e5;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            background-color: #fafaff;
+        }
+        .result-icon { font-size: 1.2rem; margin-left: 0.5rem; }
+
+        /* Responsive True/False Table */
+        .true-false-table .statement-cell {
+            display: block;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+        .true-false-table .option-cell {
+            display: inline-block;
+            margin-right: 1rem;
+        }
+        .true-false-table .feedback-cell {
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        /* Desktop and larger screen adjustments */
+        @media (min-width: 768px) {
+            .exam-container {
+                margin: 2rem auto;
+                padding: 2.5rem;
+            }
+            .question-block {
+                padding: 1.5rem;
+            }
+            .timer {
+                font-size: 1.5rem;
+            }
+            .action-buttons {
+                flex-direction: row; /* Buttons side-by-side on desktop */
+                justify-content: center;
+            }
+            .btn {
+                width: auto; /* Auto width for buttons on desktop */
+            }
+            .result-summary {
+                padding: 2rem;
+            }
+             /* Revert True/False table to standard table layout on desktop */
+            .true-false-table .statement-cell,
+            .true-false-table .option-cell,
+            .true-false-table .feedback-cell {
+                display: table-cell;
+                width: auto;
+                margin-bottom: 0;
+                margin-right: 0;
+                margin-top: 0;
+                vertical-align: middle;
+            }
+             .true-false-table .statement-cell {
+                width: 70%;
+             }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="exam-container">
+        <div class="exam-header">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">ĐỀ KIỂM TRA TOÀN DIỆN CHƯƠNG 1 (MÃ 003)</h1>
+            <p class="text-gray-600 mt-2">Thời gian làm bài: 60 phút</p>
+        </div>
+
+        <div id="timer" class="timer">Thời gian còn lại: 60:00</div>
+        
+        <div id="exam-form">
+            <!-- PHẦN I -->
+            <h2 class="text-xl md:text-2xl font-bold text-indigo-700 mb-4">PHẦN I. CÂU TRẮC NGHIỆM NHIỀU PHƯƠNG ÁN LỰA CHỌN</h2>
+            <div id="part1"></div>
+
+            <!-- PHẦN II -->
+            <h2 class="text-xl md:text-2xl font-bold text-indigo-700 mt-8 mb-4">PHẦN II. CÂU TRẮC NGHIỆM ĐÚNG SAI</h2>
+            <div id="part2"></div>
+            
+            <!-- PHẦN III -->
+            <h2 class="text-xl md:text-2xl font-bold text-indigo-700 mt-8 mb-4">PHẦN III. CÂU TRẮC NGHIỆM TRẢ LỜI NGẮN</h2>
+            <div id="part3"></div>
+
+            <div class="action-buttons">
+                <button id="submitBtn" class="btn btn-submit">Nộp Bài</button>
+                <button id="redoBtn" class="btn btn-redo" style="display: none;">Làm Lại</button>
+            </div>
+        </div>
+
+        <div id="result-summary" class="result-summary" style="display: none;"></div>
+    </div>
+
+    <script>
+        const examData = {
+            part1: [
+                { question: "Độ không tuyệt đối là nhiệt độ ứng với", options: ["0 K.", "0°C.", "273°C", "273 K."], answer: "A" },
+                { question: "Nhiệt độ nước tinh khiết sôi ở điều kiện tiêu chuẩn là", options: ["100°C.", "1000°C.", "99°C", "0°C."], answer: "A" },
+                { question: "Nhiệt kế thuỷ ngân không dùng để đo", options: ["nhiệt độ của lò luyện kim đang hoạt động", "nhiệt độ của nước đá đang tan", "nhiệt độ khí quyển", "nhiệt độ cơ thể người"], answer: "A" },
+                { question: "Thiết bị này được sử dụng để xác định nhiệt dung riêng của chất lỏng. Giải pháp nào sau đây có thể cải thiện độ chính xác của thí nghiệm?<br>(1) Đo nhiệt độ cuối cùng của chất lỏng ngay sau khi tắt nguồn điện.<br>(2) Đậy nắp cốc lại.<br>(3) Khuấy đều chất lỏng trong suốt quá trình thí nghiệm.", options: ["Chỉ giải pháp (1)", "Chỉ giải pháp (1) và (2)", "Chỉ giải pháp (2) và (3)", "Cả ba giải pháp (1), (2) và (3)"], answer: "D" },
+                { question: "Nhiệt độ âm trong thang nhiệt độ Celsius là nhiệt độ", options: ["tan chảy của nước đá tinh khiết ở áp suất tiêu chuẩn.", "thấp hơn 0°C.", "từ 35°C đến 42°C.", "từ 0°C đến 100°C"], answer: "B" },
+                { question: "Biểu đồ cho thấy đường cong làm mát của naphthalene lỏng. Naphthalene đã đông đặc hoàn toàn ở vùng nào?", svg: `<svg viewBox="0 0 500 300" class="w-full max-w-md mx-auto my-4 bg-gray-50 rounded-lg border"><line x1="50" y1="250" x2="480" y2="250" stroke="black" stroke-width="2"></line><line x1="50" y1="250" x2="50" y2="20" stroke="black" stroke-width="2"></line><text x="400" y="275" font-size="16">Thời gian</text><text x="15" y="150" font-size="16" writing-mode="tb" text-anchor="middle">Nhiệt độ</text><path d="M 50 50 L 120 120 L 300 120 L 380 180 L 450 220" stroke="blue" stroke-width="3" fill="none"></path><line x1="120" y1="250" x2="120" y2="120" stroke="gray" stroke-width="1" stroke-dasharray="4"></line><line x1="300" y1="250" x2="300" y2="120" stroke="gray" stroke-width="1" stroke-dasharray="4"></line><line x1="380" y1="250" x2="380" y2="180" stroke="gray" stroke-width="1" stroke-dasharray="4"></line><text x="85" y="270" font-size="20" text-anchor="middle">P</text><text x="210" y="270" font-size="20" text-anchor="middle">Q</text><text x="340" y="270" font-size="20" text-anchor="middle">R</text><text x="415" y="270" font-size="20" text-anchor="middle">S</text></svg>`, options: ["P", "Q", "C. R", "S"], answer: "D" },
+                { question: "Theo thang nhiệt độ Celsius, từ nhiệt độ đông đặc đến nhiệt độ sôi của nước được chia thành", options: ["100 phần bằng nhau, mỗi phần ứng với 1°C.", "100 phần bằng nhau, mỗi phần ứng với 1 K.", "100 phần bằng nhau, mỗi phần ứng với 1°F.", "10 phần bằng nhau, mỗi phần ứng với 1°C."], answer: "A" },
+                { question: "Cách nào sau đây không làm chất lỏng bay hơi nhanh hơn?", options: ["Tăng nhiệt độ môi trường.", "Tăng diện tích bề mặt chất lỏng.", "Tăng độ ẩm không khí.", "Để ở nơi có gió thổi mạnh hơn."], answer: "C" },
+                { question: "Vật ở thể rắn có", options: ["thể tích và hình dạng riêng, rất khó nén", "thể tích và hình dạng riêng, dễ nén", "thể tích riêng, nhưng không có hình dạng riêng, rất khó nén", "thể tích riêng nhưng không có hình dạng riêng, dễ nén"], answer: "A" },
+                { question: "Trong trường hợp nào dưới đây, sự biến đổi nội năng của vật không phải do thực hiện công?", options: ["Mài dao.", "Đóng đinh.", "Khuấy nước.", "Nung sắt trong lò."], answer: "D" },
+                { question: "Chất nào sau đây là chất lỏng ở nhiệt độ phòng (khoảng 20°C)?", options: ["Chất P.", "Chất R.", "Chất Q.", "Chất S."], answer: "C" },
+                { question: "Bốn chất lỏng P, Q, R và S có cùng khối lượng được đun nóng với cùng tốc độ. Đồ thị dưới đây cho thấy sự thay đổi nhiệt độ của chúng theo thời gian. Chất lỏng nào có nhiệt dung riêng lớn nhất?", svg: `<svg viewBox="0 0 450 350" class="w-full max-w-md mx-auto my-4 bg-gray-50 rounded-lg border"><path d="M 50 300 L 430 300" stroke="black" stroke-width="2"></path><path d="M 50 300 L 50 50" stroke="black" stroke-width="2"></path><text x="330" y="320" font-size="16">Thời gian (phút)</text><text x="10" y="60" font-size="16" writing-mode="tb">Nhiệt độ (°C)</text><path d="M 50 200 L 250 100" stroke="blue" stroke-width="2" fill="none"></path><text x="150" y="140" font-size="16">P</text><path d="M 50 300 L 250 100" stroke="blue" stroke-width="2" fill="none"></path><text x="150" y="210" font-size="16">Q</text><path d="M 50 200 L 400 100" stroke="blue" stroke-width="2" fill="none"></path><text x="225" y="130" font-size="16">R</text><path d="M 50 300 L 400 100" stroke="blue" stroke-width="2" fill="none"></path><text x="225" y="210" font-size="16">S</text><path d="M 40 100 L 400 100" stroke="black" stroke-width="1" stroke-dasharray="4"></path><text x="30" y="105" font-size="14">100</text><path d="M 40 200 L 250 200" stroke="black" stroke-width="1" stroke-dasharray="4"></path><text x="30" y="205" font-size="14">50</text><path d="M 250 310 L 250 100" stroke="black" stroke-width="1" stroke-dasharray="4"></path><text x="245" y="325" font-size="14">10</text><path d="M 400 310 L 400 100" stroke="black" stroke-width="1" stroke-dasharray="4"></path><text x="395" y="325" font-size="14">20</text><text x="50" y="320" font-size="14">0</text></svg>`, options: ["P.", "Q.", "R.", "S."], answer: "C" },
+                { question: "Một động cơ nhiệt mỗi giây nhận từ nguồn nóng một nhiệt lượng 3,2.10⁴ J đồng thời nhường lại cho nguồn lạnh một nhiệt lượng 2,4.10⁴ J. Tính hiệu suất của động cơ?", options: ["15%.", "75%.", "25%.", "85%."], answer: "C" },
+                { question: "Sử dụng các thông tin sau cho Câu 14 và Câu 15. Thả đồng thời 0,2 kg sắt ở 15°C và 450 g đồng ở nhiệt độ 25°C vào 150 g nước ở nhiệt độ 80°C. Biết sự tỏa nhiệt ra ngoài môi trường là không đáng kể và nhiệt dung riêng của sắt, đồng, nước lần lượt bằng 460 J/(kg.K), 400 J/(kg.K) và 4200 J/(kg.K). Nhận định nào sau đây là đúng về sự trao đổi nhiệt của các vật?", options: ["Sắt và đồng tỏa nhiệt, nước thu nhiệt.", "Sắt tỏa nhiệt, đồng và nước thu nhiệt.", "Sắt và đồng thu nhiệt, nước tỏa nhiệt.", "Sắt và nước tỏa nhiệt, đồng thu nhiệt."], answer: "C" },
+                { question: "Nhiệt độ cân bằng của hệ là", options: ["54,1°C", "62,4°C.", "46,7°C", "38,9°C."], answer: "B" },
+                { question: "Một nhiệt kế thủy ngân có khoảng cách giữa vạch 0°C và vạch 100°C là 20 cm. Khi mực thủy ngân thấp hơn vạch 100°C 5 cm thì nhiệt độ là", options: ["25°C", "50°C", "60°C.", "75°C."], answer: "D" },
+                { question: "Người ta bỏ 100 g nước đá ở 0°C (áp suất 1 atm) vào 300 g nước có nhiệt độ 20°C. Cho biết nhiệt nóng chảy riêng của nước đá λ=3,4.10⁵ J/kg và nhiệt dung riêng của nước là c=4200 J/kg.K. Bỏ qua sự trao đổi nhiệt với bình chứa và môi trường bên ngoài. Lượng nước đá còn lại chưa tan hết xấp xỉ là", options: ["26 g.", "74 g.", "35 g.", "0 g."], answer: "A" },
+                { question: "Sự phụ thuộc vào nhiệt độ của bước sóng điện từ theo hệ thức Wien: T.λ_max = 2900 μm.K được dùng vào việc chế tạo các nhiệt kế thường dùng hằng ngày như nhiệt kế hồng ngoại, cũng như các nhiệt kế trong thiên văn để đo nhiệt độ bề mặt của các thiên thể. Xét một nhiệt kế hồng ngoại khi đo nhiệt độ cơ thể người như hình vẽ. Bước sóng hồng ngoại do cơ thể người phát ra xấp xỉ bằng", options: ["9,4 μm.", "79 μm", "29μm.", "10,6 μm."], answer: "A" }
+            ],
+            part2: [
+                {
+                    context: "Một học sinh sử dụng thiết lập thí nghiệm được thể hiện trong hình dưới đây để tìm nhiệt dung riêng của một kim loại...",
+                    statements: [
+                        { text: "Có thể cải thiện độ chính xác của thí nghiệm bằng việc dùng vật liệu cách nhiệt bọc khối kim loại.", answer: true },
+                        { text: "Lặp lại thí nghiệm với nhiệt độ ban đầu của khối kim loại là 80°C giúp tăng độ chính xác của thí nghiệm.", answer: false },
+                        { text: "Thí nghiệm có thể sử dụng để đo nhiệt dung riêng của gỗ.", answer: false },
+                        { text: "Bỏ qua mọi hao phí về nhiệt. Nhiệt dung riêng của khối kim loại tính toán được là 1091 J/(kg.K).", answer: false }
+                    ]
+                },
+                {
+                    context: "Một nhóm học sinh thực hiện thí nghiệm đo nhiệt dung riêng của một viên bị làm bằng hợp kim...",
+                    statements: [
+                        { text: "Việc chuẩn bị các dụng cụ ở (I) thể hiện một phần kế hoạch của học sinh.", answer: true },
+                        { text: "Trong bước 1 (II), khi thả viên bi vào nhiệt lượng kế thì chỉ có viên bi tỏa nhiệt.", answer: true },
+                        { text: "Độ chính xác của phép đo một phần phụ thuộc vào độ tinh khiết của nước trong bình nước nóng.", answer: true },
+                        { text: "Nhiệt dung riêng của viên bi tính theo công thức: C_z = [m₂.C₁ + (m₃+m₂).C₂](t₃-t₂) / [m₁.(t₁-t₃)].", answer: false }
+                    ]
+                },
+                {
+                    context: "Một nhóm học sinh tìm hiểu về quá trình truyền nhiệt. Giả thuyết của nhóm học sinh là “quá trình truyền nhiệt luôn xảy ra khi hai vật tiếp xúc với nhau\"...",
+                    statements: [
+                        { text: "Kết quả thí nghiệm xác nhận giả thuyết của nhóm học sinh là đúng.", answer: false },
+                        { text: "Kết quả thí nghiệm ở bước 1 cho thấy quá trình truyền nhiệt chỉ xảy ra khi có sự chênh lệch nhiệt độ giữa các vật.", answer: true },
+                        { text: "Năng lượng nhiệt truyền từ vật có nhiệt độ cao hơn sang vật có nhiệt độ thấp hơn.", answer: true },
+                        { text: "Khi quá trình truyền nhiệt kết thúc nội năng của nước ở trong A và B bằng nhau.", answer: false }
+                    ]
+                },
+                {
+                    context: "Máy sấy chân không bao gồm các bộ phận chính như buồng sấy... Do môi trường chân không làm giảm đáng kể lượng oxygen trong buồng sấy, quá trình oxy hóa được ngăn chặn, giúp bảo toàn màu sắc, hương vị và chất dinh dưỡng của sản phẩm.",
+                    statements: [
+                        { text: "Môi trường áp suất rất thấp trong máy sấy giúp hạn chế quá trình oxy hóa sản phẩm.", answer: true },
+                        { text: "Nhiệt độ sấy của máy sấy chân không thường cao hơn nhiệt độ sấy trong máy sấy nhiệt thông thường.", answer: false },
+                        { text: "Máy sấy chân không phù hợp để sấy các thực phẩm dễ bị hỏng bởi nhiệt độ cao.", answer: true },
+                        { text: "Chúng ta đưa vào buồng sấy 2 kg mít đã được tách hột. Biết mít có nhiệt dung riêng là 3500 J/kg.K, để tăng nhiệt độ sản phẩm từ 20°C đến 25°C thì cần cung cấp một nhiệt lượng là 30 kJ cho sản phẩm, bỏ qua quá trình bay hơi của nước ở khoảng nhiệt độ này.", answer: false }
+                    ]
+                }
+            ],
+            part3: [
+                { question: "Sử dụng các thông tin sau cho Câu 1 và Câu 2: Có 20 lít nước ở nhiệt độ 20°C. Cho khối lượng riêng của nước là 1000 kg/m³ và nhiệt dung riêng của nước là 4186 J/kg.K. Dùng một thiết bị điện có công suất 2,5 kW để đun lượng nước trên lên tới 70°C. Biết chỉ có 80% điện năng tiêu thụ được dùng để làm nóng nước. Nhiệt lượng nước thu vào là bao nhiêu kJ?", answer: "4186" },
+                { question: "Thời gian truyền nhiệt lượng cần thiết là bao nhiêu giây?", answer: "2093" },
+                { question: "Sapa nằm ở phía Tây Bắc và cách trung tâm thủ đô Hà Nội khoảng 370 km, có độ cao khoảng 1600 m so với mực nước biển. Ở Sapa vào mùa hè rất mát mẻ, độ chênh lệch nhiệt độ giữa ngày và đêm là khá cao, ban ngày nhiệt độ trung bình là 25°C, ban đêm nhiệt độ trung bình còn khoảng 14°C. Độ chênh lệch nhiệt độ trung bình giữa ngày và đêm vào mùa hè ở Sapa là bao nhiêu K?", answer: "11" },
+                { question: "Trong một nhiệt lượng kế bằng nhôm có khối lượng m_nl=300g có một cục nước đá nặng m_nd (g). Nhiệt độ của nước đá và nhiệt lượng kế là t₁=-5°C, Sau đó người ta cho m_hn (g) hơi nước ở nhiệt độ t₂=100°C vào nhiệt lượng kế và khi đã cân bằng nhiệt thì nhiệt độ của nhiệt lượng kế là t₃=25°C. Lúc đó trong nhiệt lượng kế có 500 g nước... Giá trị của (m_nd - 2m_hn) là bao nhiêu gam? (làm tròn kết quả đến hàng đơn vị)", answer: "269" },
+                { question: "Sử dụng các thông tin sau cho Câu 5 và Câu 6: Người ta dùng bếp điện có điện trở R=24,2 Ω được nối vào nguồn có hiệu điện thế U = 220 V để đun 2 kg nước ở 20°C, áp suất 1 atm. Cho rằng nước chỉ hấp thụ 20% nhiệt lượng tỏa ra từ bếp... Thời gian đun sôi lượng nước trên bằng bao nhiêu phút?", answer: "28" },
+                { question: "Tốc độ thoát hơi nước qua lỗ tròn bằng bao nhiêu m/s? (Kết quả làm tròn đến hàng phần trăm)", answer: "0.68" }
+            ]
+        };
+
+        const part1Container = document.getElementById('part1');
+        const part2Container = document.getElementById('part2');
+        const part3Container = document.getElementById('part3');
+        const submitBtn = document.getElementById('submitBtn');
+        const redoBtn = document.getElementById('redoBtn');
+        const resultSummaryContainer = document.getElementById('result-summary');
+        const timerEl = document.getElementById('timer');
+
+        let timerInterval;
+        let timeRemaining = 3600;
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            timerEl.textContent = `Thời gian còn lại: ${formatTime(timeRemaining)}`;
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                timerEl.textContent = `Thời gian còn lại: ${formatTime(timeRemaining)}`;
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerEl.textContent = "Hết giờ!";
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function loadExam() {
+            // Part 1
+            examData.part1.forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'question-block';
+                qBlock.id = `p1-q${index}`;
+                let optionsHTML = '';
+                q.options.forEach((opt, i) => {
+                    const optionChar = String.fromCharCode(65 + i);
+                    optionsHTML += `
+                        <label class="option">
+                            <input type="radio" name="p1-q${index}" value="${optionChar}">
+                            <span><strong>${optionChar}.</strong> ${opt}</span>
+                        </label>
+                    `;
+                });
+                qBlock.innerHTML = `<p class="question-title"><strong>Câu ${index + 1}:</strong> ${q.question}</p>${q.svg || ''}${optionsHTML}`;
+                part1Container.appendChild(qBlock);
+            });
+
+            // Part 2
+            examData.part2.forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'question-block';
+                qBlock.id = `p2-q${index}`;
+                let statementsHTML = '<table class="w-full"><tbody>';
+                q.statements.forEach((stmt, i) => {
+                    const statementChar = String.fromCharCode(97 + i);
+                    statementsHTML += `
+                        <tr id="p2-q${index}-s${i}" class="true-false-table">
+                            <td class="statement-cell py-2"><strong>${statementChar})</strong> ${stmt.text}</td>
+                            <td class="option-cell py-2">
+                                <label class="option !mb-0 !p-2">
+                                    <input type="radio" name="p2-q${index}-s${i}" value="true"> Đúng
+                                </label>
+                            </td>
+                            <td class="option-cell py-2">
+                                <label class="option !mb-0 !p-2">
+                                    <input type="radio" name="p2-q${index}-s${i}" value="false"> Sai
+                                </label>
+                            </td>
+                            <td class="feedback-cell py-2"></td>
+                        </tr>
+                    `;
+                });
+                statementsHTML += '</tbody></table>';
+                qBlock.innerHTML = `<p class="question-title"><strong>Câu ${index + 1}:</strong> ${q.context}</p>${statementsHTML}`;
+                part2Container.appendChild(qBlock);
+            });
+
+            // Part 3
+            examData.part3.forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'question-block';
+                qBlock.id = `p3-q${index}`;
+                qBlock.innerHTML = `
+                    <p class="question-title"><strong>Câu ${index + 1}:</strong> ${q.question}</p>
+                    <input type="text" class="short-answer-input" name="p3-q${index}" placeholder="Nhập câu trả lời của bạn...">
+                `;
+                part3Container.appendChild(qBlock);
+            });
+        }
+        
+        function getResultIcon(isCorrect, isAnswered) {
+            if (!isAnswered) return '<span class="result-icon">⚪️</span><span class="text-orange-600 font-medium ml-2">Chưa làm</span>';
+            if (isCorrect) return '<span class="result-icon">✅</span>';
+            return '<span class="result-icon">❌</span>';
+        }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            redoBtn.style.display = 'block';
+
+            let scorePart1 = 0;
+            let scorePart2 = 0;
+            let scorePart3 = 0;
+            
+            // Check Part 1
+            examData.part1.forEach((q, index) => {
+                const qBlock = document.getElementById(`p1-q${index}`);
+                const selected = document.querySelector(`input[name="p1-q${index}"]:checked`);
+                if (selected) {
+                    if (selected.value === q.answer) {
+                        scorePart1 += 0.25;
+                        qBlock.classList.add('correct');
+                    } else {
+                        qBlock.classList.add('incorrect');
+                        const correctLabel = Array.from(qBlock.querySelectorAll('.option')).find(label => label.querySelector('input').value === q.answer);
+                        if (correctLabel) correctLabel.insertAdjacentHTML('beforeend', `<span class="correct-answer-text">(Đáp án đúng)</span>`);
+                    }
+                } else {
+                    qBlock.classList.add('unanswered');
+                    const correctLabel = Array.from(qBlock.querySelectorAll('.option')).find(label => label.querySelector('input').value === q.answer);
+                    if (correctLabel) correctLabel.insertAdjacentHTML('beforeend', `<span class="correct-answer-text">(Đáp án đúng)</span>`);
+                }
+            });
+
+            // Check Part 2
+            examData.part2.forEach((q, qIndex) => {
+                q.statements.forEach((stmt, sIndex) => {
+                    const row = document.getElementById(`p2-q${qIndex}-s${sIndex}`);
+                    const feedbackCell = row.querySelector('.feedback-cell');
+                    const selected = document.querySelector(`input[name="p2-q${qIndex}-s${sIndex}"]:checked`);
+                    let isCorrect = false;
+                    let isAnswered = false;
+                    if (selected) {
+                        isAnswered = true;
+                        if ((selected.value === 'true' && stmt.answer) || (selected.value === 'false' && !stmt.answer)) {
+                            scorePart2 += 0.25;
+                            isCorrect = true;
+                        }
+                    }
+                    feedbackCell.innerHTML = getResultIcon(isCorrect, isAnswered);
+                    if(!isCorrect){
+                        feedbackCell.innerHTML += `<span class="correct-answer-text">Đáp án: ${stmt.answer ? 'Đúng' : 'Sai'}</span>`;
+                    }
+                });
+            });
+
+            // Check Part 3
+            examData.part3.forEach((q, index) => {
+                const qBlock = document.getElementById(`p3-q${index}`);
+                const input = document.querySelector(`input[name="p3-q${index}"]`);
+                if (input.value.trim() !== '') {
+                    if (input.value.trim() == q.answer) {
+                        scorePart3 += 0.25;
+                        qBlock.classList.add('correct');
+                    } else {
+                        qBlock.classList.add('incorrect');
+                        input.insertAdjacentHTML('afterend', `<div class="mt-2"><span class="correct-answer-text">Đáp án đúng: ${q.answer}</span></div>`);
+                    }
+                } else {
+                    qBlock.classList.add('unanswered');
+                    input.insertAdjacentHTML('afterend', `<div class="mt-2"><span class="correct-answer-text">Đáp án đúng: ${q.answer}</span></div>`);
+                }
+            });
+
+            const totalScore = scorePart1 + scorePart2 + scorePart3;
+            const maxScore = (examData.part1.length * 0.25) + (examData.part2.length * 4 * 0.25) + (examData.part3.length * 0.25);
+
+            resultSummaryContainer.innerHTML = `
+                <h2 class="text-2xl md:text-3xl font-bold text-indigo-700 mb-4">Kết Quả Bài Làm</h2>
+                <p class="text-lg md:text-xl mb-2"><strong>Tổng điểm:</strong> ${totalScore.toFixed(2)} / ${maxScore.toFixed(2)}</p>
+                <div class="grid md:grid-cols-3 gap-4 text-left mt-6">
+                    <div class="p-4 bg-blue-100 rounded-lg">
+                        <h3 class="font-bold text-blue-800">Phần I (Trắc nghiệm)</h3>
+                        <p>Điểm: ${scorePart1.toFixed(2)} / ${(examData.part1.length * 0.25).toFixed(2)}</p>
+                    </div>
+                    <div class="p-4 bg-green-100 rounded-lg">
+                        <h3 class="font-bold text-green-800">Phần II (Đúng/Sai)</h3>
+                        <p>Điểm: ${scorePart2.toFixed(2)} / ${(examData.part2.length * 1).toFixed(2)}</p>
+                    </div>
+                    <div class="p-4 bg-yellow-100 rounded-lg">
+                        <h3 class="font-bold text-yellow-800">Phần III (Trả lời ngắn)</h3>
+                        <p>Điểm: ${scorePart3.toFixed(2)} / ${(examData.part3.length * 0.25).toFixed(2)}</p>
+                    </div>
+                </div>
+            `;
+            resultSummaryContainer.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function redoExam() {
+            document.getElementById('exam-form').reset();
+            document.querySelectorAll('.question-block').forEach(el => el.classList.remove('correct', 'incorrect', 'unanswered'));
+            document.querySelectorAll('.correct-answer-text').forEach(el => el.remove());
+            document.querySelectorAll('.feedback-cell').forEach(el => el.innerHTML = '');
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            redoBtn.style.display = 'none';
+            resultSummaryContainer.style.display = 'none';
+            timeRemaining = 3600;
+            startTimer();
+        }
+
+        submitBtn.addEventListener('click', submitExam);
+        redoBtn.addEventListener('click', redoExam);
+
+        window.onload = () => {
+            loadExam();
+            startTimer();
+        };
+    </script>
+</body>
+</html>

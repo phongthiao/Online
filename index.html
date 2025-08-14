@@ -1,0 +1,536 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHÒNG LUYỆN THI ONLINE - Bứt Phá Điểm Số</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Hiệu ứng nền chuyển động nhẹ nhàng */
+            background: linear-gradient(-45deg, #f0f9ff, #e0f2fe, #f5f3ff, #eef2ff);
+            background-size: 400% 400%;
+            animation: gradient-bg 20s ease infinite;
+        }
+        @keyframes gradient-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        /* HIỆU ỨNG LẤP LÁNH CHO CHỮ */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-text {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 5s linear infinite;
+            /* Thêm bóng cho chữ để nổi bật hơn */
+            text-shadow: 0 2px 15px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* HIỆU ỨNG QUÉT SÁNG CHO KHUNG */
+        .shimmer-box {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer-slide 4s infinite ease-in-out;
+            animation-delay: 0.5s;
+        }
+        @keyframes shimmer-slide {
+            0% { transform: translateX(-150%); }
+            50% { transform: translateX(150%); }
+            100% { transform: translateX(-150%); }
+        }
+
+        .star-rating i {
+            color: #facc15;
+        }
+        .exam-item {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+        .exam-item:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header chung cho các trang -->
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-40">
+        <div class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center relative">
+            <button id="back-button" class="p-2 rounded-full hover:bg-gray-200 transition-colors hidden">
+                <i class="ph-bold ph-arrow-left text-xl text-gray-600"></i>
+            </button>
+            <h1 id="header-title" class="text-3xl sm:text-4xl md:text-5xl font-black shimmer-text cursor-pointer text-center flex-grow uppercase tracking-wider">
+                PHÒNG LUYỆN THI ONLINE
+            </h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Trang Chủ -->
+        <section id="home-page" class="page active">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl md:text-5xl font-extrabold mb-4 shimmer-text">Chinh Phục Giấc Mơ Đại Học</h2>
+                <p class="text-gray-600 text-lg max-w-2xl mx-auto">Con đường ngắn nhất để bứt phá điểm số là luyện tập mỗi ngày.</p>
+            </div>
+
+            <!-- Social Proof & Features -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="flex items-center gap-4 bg-white p-4 rounded-xl shadow-md border border-sky-100">
+                    <i class="ph-fill ph-rocket-launch text-4xl text-sky-500"></i>
+                    <div>
+                        <p class="font-bold text-lg text-sky-700">Hơn 1000+ học viên</p>
+                        <p class="text-gray-600">đã cải thiện điểm số!</p>
+                    </div>
+                </div>
+                 <div class="flex items-center gap-4 bg-white p-4 rounded-xl shadow-md border border-sky-100">
+                    <i class="ph-fill ph-database text-4xl text-sky-500"></i>
+                    <div>
+                        <p class="font-bold text-lg text-sky-700">Ngân hàng đề thi</p>
+                        <p class="text-gray-600">phong phú, cập nhật liên tục.</p>
+                    </div>
+                </div>
+                 <div class="flex items-center gap-4 bg-white p-4 rounded-xl shadow-md border border-sky-100">
+                    <i class="ph-fill ph-timer text-4xl text-sky-500"></i>
+                    <div>
+                        <p class="font-bold text-lg text-sky-700">Phòng Thi Ảo</p>
+                        <p class="text-gray-600">Trải nghiệm áp lực thời gian.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chọn Môn Học Lớp 12 -->
+            <div class="text-center mb-8 mt-12">
+                 <h3 class="text-2xl md:text-3xl font-bold text-gray-800">Khối Lớp 12</h3>
+                 <p class="text-gray-500">Chọn môn học để bắt đầu luyện đề</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                 <div class="subject-card group relative bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden" data-subject="Toán">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold text-gray-700 group-hover:text-white transition-colors duration-300 z-10">Toán</h3>
+                        <i class="ph-bold ph-calculator text-4xl text-blue-400 group-hover:text-white transition-colors duration-300 z-10"></i>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left z-0"></div>
+                </div>
+                <div class="subject-card group relative bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden" data-subject="Vật Lí">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold text-gray-700 group-hover:text-white transition-colors duration-300 z-10">Vật Lí</h3>
+                        <i class="ph-bold ph-atom text-4xl text-green-400 group-hover:text-white transition-colors duration-300 z-10"></i>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left z-0"></div>
+                </div>
+                <div class="subject-card group relative bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden" data-subject="Hóa Học">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-semibold text-gray-700 group-hover:text-white transition-colors duration-300 z-10">Hóa Học</h3>
+                        <i class="ph-bold ph-flask text-4xl text-orange-400 group-hover:text-white transition-colors duration-300 z-10"></i>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left z-0"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trang Danh Sách Đề Thi -->
+        <section id="exam-list-page" class="page">
+            <h2 id="exam-list-title" class="text-3xl font-bold text-center mb-8 shimmer-text"></h2>
+            <div id="exam-links-container" class="space-y-5">
+                <!-- Các đề thi sẽ được tạo bằng JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Chọn Loại Đề Thi -->
+    <div id="exam-type-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-backdrop fixed inset-0" onclick="closeModal()"></div>
+        <div class="bg-white rounded-lg shadow-2xl p-8 m-4 max-w-md w-full relative transform transition-all duration-300 scale-95 opacity-0">
+            <h3 id="modal-title" class="text-2xl font-bold mb-6 text-center shimmer-text">Chọn loại đề thi</h3>
+            <div id="modal-options-container" class="space-y-4">
+                <!-- Các nút chọn sẽ được thêm vào đây bằng JS -->
+            </div>
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Modal Yêu Cầu Mật Khẩu -->
+    <div id="password-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-backdrop fixed inset-0"></div>
+        <div class="bg-white rounded-lg shadow-2xl p-8 m-4 max-w-sm w-full relative transform transition-all duration-300 scale-95 opacity-0">
+            <h3 class="text-2xl font-bold mb-4 text-center shimmer-text">Yêu Cầu Mật Khẩu</h3>
+            <p class="text-center text-gray-600 mb-6 text-sm">Vui lòng nhập mật khẩu để tiếp tục.</p>
+            <form id="password-form">
+                <div class="mb-4">
+                    <label for="password-input" class="sr-only">Mật khẩu</label>
+                    <div class="relative">
+                        <input type="password" id="password-input" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="••••••••">
+                        <i class="ph-bold ph-key absolute top-1/2 right-4 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                <div id="password-error" class="text-sm text-center mb-4 h-10 flex items-center justify-center"></div>
+                <button type="submit" class="w-full bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300">
+                    Xác Nhận
+                </button>
+            </form>
+            <button id="close-password-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="ph-bold ph-x text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Phần đánh giá của học viên -->
+    <section id="testimonials" class="py-16 bg-white mt-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-2 shimmer-text">Học Viên Nói Gì Về Chúng Tôi?</h2>
+            <p class="text-center text-gray-600 mb-12">Những chia sẻ chân thực là động lực để chúng tôi phát triển.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Đánh giá 1 -->
+                <div class="bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-3">
+                        <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=AN" alt="Avatar" class="w-10 h-10 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/40x40/E2E8F0/4A5568?text=A';">
+                        <div>
+                            <p class="font-bold text-sm">Nguyễn Thu An</p>
+                            <div class="star-rating text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic text-sm">"Giao diện web rất dễ dùng, đề thi chất lượng. Em đã tiến bộ rất nhiều từ khi luyện đề ở đây."</p>
+                </div>
+                <!-- Đánh giá 2 -->
+                <div class="bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-3">
+                        <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=BM" alt="Avatar" class="w-10 h-10 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/40x40/E2E8F0/4A5568?text=B';">
+                        <div>
+                            <p class="font-bold text-sm">Trần Bảo Minh</p>
+                            <div class="star-rating text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-star-half-fill ph-star"></i></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic text-sm">"Nguồn tài liệu phong phú, đặc biệt là các môn tự nhiên. Rất đáng để trải nghiệm."</p>
+                </div>
+                <!-- Đánh giá 3 -->
+                <div class="bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-3">
+                        <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=LP" alt="Avatar" class="w-10 h-10 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/40x40/E2E8F0/4A5568?text=L';">
+                        <div>
+                            <p class="font-bold text-sm">Lê Hà Phương</p>
+                            <div class="star-rating text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic text-sm">"Web đã giúp mình hệ thống lại kiến thức và tự tin hơn rất nhiều trước kỳ thi quan trọng."</p>
+                </div>
+                 <!-- Đánh giá 4 -->
+                <div class="bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-3">
+                        <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=QK" alt="Avatar" class="w-10 h-10 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/40x40/E2E8F0/4A5568?text=Q';">
+                        <div>
+                            <p class="font-bold text-sm">Vũ Quốc Khánh</p>
+                            <div class="star-rating text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph ph-star"></i></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic text-sm">"Giao diện đẹp, tốc độ nhanh. Rất hữu ích cho việc ôn tập cuối kỳ của chúng em!"</p>
+                </div>
+                 <!-- Đánh giá 5 -->
+                <div class="bg-gray-50 p-5 rounded-lg shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-3">
+                        <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=HT" alt="Avatar" class="w-10 h-10 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/40x40/E2E8F0/4A5568?text=H';">
+                        <div>
+                            <p class="font-bold text-sm">Phạm Huyền Trang</p>
+                            <div class="star-rating text-sm"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-star-half-fill ph-star"></i></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic text-sm">"Phần tài liệu rất hữu ích, giúp mình hiểu được lỗi sai. Cảm ơn đội ngũ phát triển!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phần liên hệ Zalo -->
+    <section id="contact" class="bg-gray-800 text-white">
+        <div class="container mx-auto px-4 py-12 text-center">
+            <h2 class="text-3xl font-bold mb-4">Sẵn Sàng Bứt Phá Điểm Số?</h2>
+            <p class="text-gray-300 mb-6 max-w-xl mx-auto">Nhận tư vấn lộ trình học tập và các gói luyện thi độc quyền ngay hôm nay!</p>
+            <a href="https://zalo.me/0799457172" target="_blank" class="inline-block bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300">
+                <i class="ph-fill ph-zalo-logo mr-2"></i> Liên Hệ Qua Zalo
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 text-sm">
+        <div class="container mx-auto py-4 px-4 text-center">
+            <p>© 2025 PHÒNG LUYỆN THI ONLINE. Phát triển bởi Gemini.</p>
+            <p>Nền tảng luyện thi thế hệ mới dành cho học sinh Việt Nam.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // State management
+        let currentSelection = { class: null, subject: null, examType: null };
+        let navigationHistory = ['home-page'];
+        let targetExamUrl = ''; // Biến toàn cục để lưu link đề thi
+
+        // --- DATA ---
+        const standardExamTypes = [
+            { type: 'Giữa Học Kì 1', icon: 'ph-leaf' },
+            { type: 'Cuối Học Kì 1', icon: 'ph-calendar-check' },
+            { type: 'Giữa Học Kì 2', icon: 'ph-sparkle' },
+            { type: 'Cuối Học Kì 2', icon: 'ph-medal' }
+        ];
+
+        // THAY ĐỔI: Hoàn lại tên các chương Vật Lý theo yêu cầu
+        const physics12ExamTypes = [
+            { type: 'Chương 1 : Vật Lí Nhiệt', icon: 'ph-thermometer-simple' },
+            { type: 'Chương 2: Khí Lí Tưởng', icon: 'ph-wind' },
+            { type: 'Chương 3: Từ Trường', icon: 'ph-magnet' },
+            { type: 'Chương 4: Vật Lí Hạt Nhân', icon: 'ph-atom' },
+            { type: 'Đề Ôn Tổng Hợp', icon: 'ph-stack' }
+        ];
+
+        // --- DOM Elements ---
+        const pages = document.querySelectorAll('.page');
+        const backButton = document.getElementById('back-button');
+        const headerTitle = document.getElementById('header-title');
+        const examListTitle = document.getElementById('exam-list-title');
+        const subjectCards = document.querySelectorAll('.subject-card');
+        const modal = document.getElementById('exam-type-modal');
+        const modalContent = modal.querySelector('.bg-white');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalOptionsContainer = document.getElementById('modal-options-container');
+        const examLinksContainer = document.getElementById('exam-links-container');
+        const passwordModal = document.getElementById('password-modal');
+        const closePasswordModalBtn = document.getElementById('close-password-modal-btn');
+        const passwordForm = document.getElementById('password-form');
+        const passwordInput = document.getElementById('password-input');
+        const passwordError = document.getElementById('password-error');
+
+        // --- FUNCTIONS ---
+        function showPage(pageId, isBack = false) {
+            if (!isBack && pageId !== navigationHistory[navigationHistory.length - 1]) {
+                navigationHistory.push(pageId);
+            }
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId)?.classList.add('active');
+            backButton.classList.toggle('hidden', navigationHistory.length <= 1);
+        }
+        
+        function goBack() {
+            if (navigationHistory.length > 1) {
+                navigationHistory.pop();
+                showPage(navigationHistory[navigationHistory.length - 1], true);
+            }
+        }
+
+        function goHome() {
+            navigationHistory = ['home-page'];
+            showPage('home-page');
+        }
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                 modal.querySelector('.bg-white').classList.remove('scale-95', 'opacity-0');
+                 modal.querySelector('.bg-white').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.querySelector('.bg-white').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+        
+        function openPasswordModal(url) {
+            targetExamUrl = url; // Lưu link của đề thi được bấm
+            passwordInput.value = '';
+            passwordError.innerHTML = '';
+            passwordError.classList.remove('text-red-500', 'text-green-500');
+            passwordModal.classList.remove('hidden');
+            passwordModal.classList.add('flex');
+            setTimeout(() => {
+                passwordModal.querySelector('.bg-white').classList.remove('scale-95', 'opacity-0');
+                passwordModal.querySelector('.bg-white').classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closePasswordModal() {
+            passwordModal.querySelector('.bg-white').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => passwordModal.classList.add('hidden'), 300);
+        }
+        
+        function renderModalOptions(options) {
+            modalOptionsContainer.innerHTML = '';
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'exam-type-btn w-full text-left p-4 bg-gray-100 hover:bg-sky-600 hover:text-white rounded-lg font-semibold transition-all duration-200 flex items-center space-x-3';
+                button.dataset.examType = option.type;
+                button.innerHTML = `<i class="ph ${option.icon}"></i><span>${option.type}</span>`;
+                modalOptionsContainer.appendChild(button);
+            });
+        }
+
+        function renderExamList(numberOfExams) {
+            examLinksContainer.innerHTML = ''; // Xóa danh sách cũ
+            for (let i = 1; i <= numberOfExams; i++) {
+                const examItem = document.createElement('div');
+                examItem.className = 'exam-item';
+                
+                let examLink = '#'; // Link mặc định
+                
+                if (currentSelection.subject === 'Vật Lí') {
+                    // THAY ĐỔI: Cập nhật logic liên kết theo tên chương mới
+                    if (currentSelection.examType === 'Chương 1 : Vật Lí Nhiệt') {
+                        if (i === 1) examLink = 'lic1d1.html';
+                        if (i === 2) examLink = 'lic1d2.html';
+                        if (i === 3) examLink = 'lic1d3.html';
+                    } 
+                    else if (currentSelection.examType === 'Chương 2: Khí Lí Tưởng') {
+                        if (i === 1) examLink = 'lic2d1.html';
+                        if (i === 2) examLink = 'lic2d2.html';
+                    }
+                }
+
+                examItem.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-lg text-gray-700">Đề thi thử số ${i}</span>
+                        <button data-url="${examLink}" class="start-exam-btn bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-200">
+                            Làm bài
+                        </button>
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-100">
+                        <a href="#" class="answer-link text-sm text-sky-600 hover:underline flex items-center">
+                            <i class="ph-bold ph-books mr-2"></i>
+                            Tài liệu - Bài tập đề thi thử số ${i}
+                        </a>
+                    </div>
+                `;
+                examLinksContainer.appendChild(examItem);
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        backButton.addEventListener('click', goBack);
+        headerTitle.addEventListener('click', goHome);
+
+        subjectCards.forEach(card => {
+            card.addEventListener('click', () => {
+                currentSelection.class = '12'; 
+                currentSelection.subject = card.dataset.subject;
+                modalTitle.textContent = `Môn ${currentSelection.subject}`;
+
+                if (currentSelection.subject === 'Vật Lí') {
+                    renderModalOptions(physics12ExamTypes);
+                } else {
+                    renderModalOptions(standardExamTypes);
+                }
+                
+                openModal();
+            });
+        });
+        
+        modalOptionsContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('.exam-type-btn');
+            if (!button) return;
+
+            currentSelection.examType = button.dataset.examType;
+            examListTitle.textContent = `${currentSelection.examType} - Môn ${currentSelection.subject} - Lớp ${currentSelection.class}`;
+            
+            // THAY ĐỔI: Cập nhật logic hiển thị số lượng đề theo tên chương mới
+            let numberOfExams = 5; // Số lượng mặc định
+            if (currentSelection.subject === 'Vật Lí') {
+                if (currentSelection.examType === 'Chương 1 : Vật Lí Nhiệt') {
+                    numberOfExams = 3;
+                } else if (currentSelection.examType === 'Chương 2: Khí Lí Tưởng') {
+                    numberOfExams = 2;
+                }
+            }
+            
+            renderExamList(numberOfExams);
+            
+            closeModal();
+            showPage('exam-list-page');
+        });
+        
+        closeModalBtn.addEventListener('click', closeModal);
+        
+        // --- Password Modal Listeners ---
+        examLinksContainer.addEventListener('click', (event) => {
+            const button = event.target.closest('.start-exam-btn');
+            if (button) {
+                const url = button.dataset.url;
+                if (url && url !== '#') {
+                    openPasswordModal(url); // Truyền url vào hàm
+                }
+            }
+        });
+
+        closePasswordModalBtn.addEventListener('click', closePasswordModal);
+        passwordModal.querySelector('.modal-backdrop').addEventListener('click', closePasswordModal);
+
+        passwordForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const enteredPassword = passwordInput.value;
+            if (enteredPassword === '12584') {
+                passwordError.textContent = 'Đăng nhập thành công! Đang chuyển hướng...';
+                passwordError.classList.remove('text-red-500');
+                passwordError.classList.add('text-green-500');
+                setTimeout(() => {
+                    window.location.href = targetExamUrl;
+                }, 1000);
+            } else {
+                passwordError.innerHTML = 'Hãy liên hệ qua Zalo <a href="https://zalo.me/0799457172" target="_blank" class="font-bold underline">0799457172</a> để được hỗ trợ đăng kí luyện thi online.';
+                passwordError.classList.add('text-red-500');
+                passwordError.classList.remove('text-green-500');
+                passwordInput.value = '';
+            }
+        });
+
+        // Initial setup
+        showPage('home-page');
+
+    </script>
+</body>
+</html>
